@@ -26,9 +26,8 @@ jobs:
       - uses: actions/checkout@v4
 
 
-      - name: Get AWS identity
-        run: aws sts get-caller-identity
-        
+     
+
       - name: Print repo and ref
         run: |
           echo "repo=${{ github.repository }}"

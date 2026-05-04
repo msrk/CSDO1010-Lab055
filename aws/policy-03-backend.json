@@ -5,13 +5,13 @@
       "Sid": "StateBucketList",
       "Effect": "Allow",
       "Action": ["s3:ListBucket"],
-      "Resource": "arn:aws:s3:::csdo1010-lab05-tfstate-23381353"
+      "Resource": "arn:aws:s3:::csdo1010-lab055-tfstate-531929696680"
     },
     {
       "Sid": "StateObjectsRW",
       "Effect": "Allow",
       "Action": ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"],
-      "Resource": "arn:aws:s3:::csdo1010-lab05-tfstate-23381353/lab05/*"
+      "Resource": "arn:aws:s3:::csdo1010-lab055-tfstate-531929696680/lab055/*"
     }
   ]
 }

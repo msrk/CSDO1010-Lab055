@@ -23,6 +23,7 @@ jobs:
       contents: read
 
     steps:
+      - run: aws sts get-caller-identity
       - uses: actions/checkout@v4
 
       - name: Print repo and ref

@@ -1,0 +1,60 @@
+# task-02-destroy-ec2-instance.yaml
+name: Destroy Infrastructure
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: "Type DESTROY to confirm"
+        required: true
+        default: ""
+
+env:
+  TF_WORKING_DIR: terraform
+
+  # Terraform backend configuration
+  TF_BACKEND_BUCKET: ${{ secrets.STATE_BUCKET }}
+  TF_BACKEND_KEY: lab055/terraform.tfstate
+  TF_BACKEND_REGION: ${{ secrets.AWS_REGION }}
+  TF_BACKEND_LOCK_TABLE: csdo1010-lab055-tflock
+
+jobs:
+  destroy:
+    name: Terraform destroy (CI)
+    runs-on: ubuntu-latest
+    environment: LAB055
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Block accidental runs
+        run: |
+          if [ "${{ github.event.inputs.confirm }}" != "DESTROY" ]; then
+            echo "Refusing to run. Re-run and type DESTROY."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform init (same backend)
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: |
+          terraform init -input=false \
+            -backend-config="bucket=${TF_BACKEND_BUCKET}" \
+            -backend-config="key=${TF_BACKEND_KEY}" \
+            -backend-config="region=${TF_BACKEND_REGION}" \
+            -backend-config="use_lockfile=true" \
+            -backend-config="encrypt=true"
+
+      - name: Terraform destroy
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: |
+          terraform destroy -auto-approve -input=false

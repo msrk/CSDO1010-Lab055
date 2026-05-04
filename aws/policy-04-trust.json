@@ -12,7 +12,12 @@
           "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
         },
         "StringLike": {
-          "token.actions.githubusercontent.com:sub": "repo:msrk/lap5own:environment:LAB05"
+          "token.actions.githubusercontent.com:sub": [ 
+            "repo::environment:LAB055",
+            "repo:msrk/CSDO1010-Lab055:ref:refs/heads/main",
+            "repo:msrk/CSDO1010-Lab055:ref:refs/tags/*",
+            "repo:msrk/CSDO1010-Lab055:pull_request"
+          ]
         }
       }
     }
